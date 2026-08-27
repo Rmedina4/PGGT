@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peanut Gang Golf Tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Fraunces:ital,wght@1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fairway-dark:#16281B;
+    --fairway:#2F5233;
+    --turf:#6B9B4F;
+    --scorecard:#F3EEDC;
+    --scorecard-2:#EAE2C8;
+    --shell:#C68B4A;
+    --shell-dark:#9C6530;
+    --gold:#D8A93E;
+    --ink:#1B2A1F;
+    --line: rgba(27,42,31,0.16);
+    --max: 1180px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--scorecard);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%; display:block;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 28px;}
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--shell-dark);
+    font-weight:700;
+  }
+  h1,h2,h3{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    line-height:0.98;
+    color:var(--fairway-dark);
+  }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'Space Mono', monospace;
+    font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    padding:15px 26px;
+    border-radius:2px;
+    border:2px solid var(--fairway-dark);
+    cursor:pointer;
+    background:none;
+    transition:transform .18s ease, background .18s ease, color .18s ease;
+  }
+  .btn-solid{ background:var(--fairway-dark); color:var(--scorecard); }
+  .btn-solid:hover{ background:var(--turf); border-color:var(--turf); color:var(--fairway-dark); transform:translateY(-2px); }
+  .btn-ghost{ background:transparent; color:var(--fairway-dark); }
+  .btn-ghost:hover{ background:var(--fairway-dark); color:var(--scorecard); transform:translateY(-2px); }
+  :focus-visible{ outline:3px solid var(--shell-dark); outline-offset:3px; }
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(243,238,220,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+    max-width:var(--max); margin:0 auto;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; cursor:pointer; background:none; border:none; }
+  .brand img{ height:40px; width:auto; }
+  .brand-text{ font-family:'Anton', sans-serif; font-size:19px; letter-spacing:.02em; color:var(--ink); }
+  .brand-text span{ color:var(--shell-dark); }
+  nav ul{ display:flex; gap:30px; list-style:none; }
+  nav ul li button{
+    font-family:'Space Mono', monospace; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase;
+    padding:6px 2px; border-bottom:2px solid transparent; background:none; border-top:none; border-left:none; border-right:none;
+    cursor:pointer; color:var(--ink);
+    transition:border-color .2s ease, color .2s ease;
+  }
+  nav ul li button:hover, nav ul li button.active{ border-color:var(--shell); color:var(--shell-dark); }
+  .nav-links{ display:flex; align-items:center; gap:34px; }
+  .menu-btn{ display:none; background:none; border:none; cursor:pointer; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:96px 0 70px;
+    background:
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.035) 0 42px, rgba(0,0,0,0.03) 42px 84px),
+      linear-gradient(180deg, var(--scorecard) 0%, var(--scorecard) 70%, var(--scorecard-2) 100%);
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero.small{ padding:64px 0 56px; }
+  .hero-grid{
+    display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center;
+  }
+  .hero h1{ font-size:clamp(48px, 6.6vw, 92px); margin-top:14px; }
+  .hero.small h1{ font-size:clamp(40px,5.4vw,66px); }
+  .hero h1 em{ font-style:normal; color:var(--shell-dark); }
+  .hero-sub{
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500;
+    font-size:20px; color:var(--fairway); margin:22px 0 32px; max-width:520px; line-height:1.5;
+  }
+  .hero-ctas{ display:flex; gap:16px; flex-wrap:wrap; }
+  .hero-card{
+    position:relative;
+    background:var(--fairway-dark);
+    border-radius:6px;
+    padding:26px 24px 30px;
+    color:var(--scorecard);
+    box-shadow:0 24px 50px -18px rgba(22,40,27,0.55);
+    transform:rotate(2.2deg);
+  }
+  .hero-card::before, .hero-card::after{
+    content:""; position:absolute; width:22px; height:22px; background:var(--scorecard);
+    border-radius:50%; top:50%; transform:translateY(-50%);
+  }
+  .hero-card::before{ left:-11px; } .hero-card::after{ right:-11px; }
+  .hero-card .tag{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); }
+  .hero-card .scorerow{ display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed rgba(243,238,220,0.28); font-family:'Space Mono', monospace; font-size:13px;}
+  .hero-card .scorerow:last-of-type{ border-bottom:none; }
+  .hero-card .par{ color:var(--turf); font-weight:700; }
+
+  /* ---------- TICKET ---------- */
+  .ticket{
+    position:relative;
+    background:#fff;
+    border-radius:4px;
+    box-shadow:0 18px 40px -22px rgba(22,40,27,0.4);
+    display:grid; grid-template-columns:1fr 1.3fr;
+    overflow:visible;
+  }
+  .ticket::before{
+    content:"";
+    position:absolute; left:38%; top:-11px; bottom:-11px; width:0;
+    border-left:2px dashed rgba(27,42,31,0.22);
+  }
+  .ticket-media{ position:relative; }
+  .ticket-media img{ height:100%; width:100%; object-fit:cover; }
+  .ticket-body{ padding:34px 38px; display:flex; flex-direction:column; justify-content:center; gap:14px; }
+  .ticket-body .eyebrow{ margin-bottom:2px; }
+  .ticket-body h3{ font-size:30px; color:var(--fairway-dark); }
+  .ticket-body p{ color:rgba(27,42,31,0.75); line-height:1.6; font-size:15px; }
+  .ticket-meta{ display:flex; gap:22px; flex-wrap:wrap; font-family:'Space Mono',monospace; font-size:12.5px; color:var(--shell-dark); padding-top:4px; }
+
+  section{ padding:88px 0; }
+  section.tight{ padding:56px 0; }
+  .section-head{ max-width:640px; margin-bottom:48px; }
+  .section-head h2{ font-size:clamp(32px,4vw,46px); margin-top:10px; }
+  .section-head p{ margin-top:16px; font-size:16px; line-height:1.65; color:rgba(27,42,31,0.72); }
+
+  /* ---------- BRAND / LOGO SWATCHES ---------- */
+  .brand-strip{ background:var(--scorecard-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .swatch-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+  .swatch{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; padding:52px 20px; min-height:220px; }
+  .swatch img{ height:64px; width:auto; }
+  .swatch .swatch-label{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+  .swatch.sw-cream{ background:var(--scorecard); }
+  .swatch.sw-cream .swatch-label{ color:rgba(27,42,31,0.55); }
+  .swatch.sw-fairway{ background:var(--fairway-dark); }
+  .swatch.sw-fairway .swatch-label{ color:rgba(243,238,220,0.55); }
+  .swatch.sw-shell{ background:var(--shell); }
+  .swatch.sw-shell .swatch-label{ color:rgba(27,42,31,0.6); }
+  .swatch.sw-gold{ background:var(--gold); }
+  .swatch.sw-gold .swatch-label{ color:rgba(27,42,31,0.6); }
+
+  /* ---------- CHAMPIONS ---------- */
+  .champs{ background:var(--fairway-dark); color:var(--scorecard); }
+  .champs .eyebrow{ color:var(--gold); }
+  .champs .section-head h2{ color:var(--scorecard); }
+  .champs .section-head p{ color:rgba(243,238,220,0.68); }
+  .champ-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  .champ-card{
+    position:relative; border-radius:6px; overflow:hidden;
+    aspect-ratio: 4/3.1;
+    box-shadow:0 20px 44px -20px rgba(0,0,0,0.6);
+  }
+  .champ-card img{ width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
+  .champ-card:hover img{ transform:scale(1.05); }
+  .champ-overlay{
+    position:absolute; inset:0;
+    background:linear-gradient(0deg, rgba(15,25,17,0.92) 0%, rgba(15,25,17,0.15) 55%, transparent 75%);
+    display:flex; flex-direction:column; justify-content:flex-end; padding:26px;
+  }
+  .champ-plate{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;}
+  .champ-overlay h3{ color:#fff; font-size:26px; }
+  .champ-overlay p{ color:rgba(243,238,220,0.75); font-size:13.5px; margin-top:6px; }
+
+  /* ---------- ABOUT / STORY ---------- */
+  .story{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:64px; align-items:center; }
+  .story-visual{
+    position:relative; border-radius:6px; overflow:hidden; aspect-ratio:1/1.05;
+    box-shadow:0 22px 50px -24px rgba(22,40,27,0.5);
+  }
+  .story-visual img{ width:100%; height:100%; object-fit:cover; }
+  .story h2{ font-size:clamp(30px,3.6vw,42px); }
+  .story .lede{ font-family:'Fraunces',serif; font-style:italic; font-size:21px; color:var(--fairway); line-height:1.55; margin:18px 0 20px;}
+  .story p{ font-size:15.5px; line-height:1.7; color:rgba(27,42,31,0.75); margin-bottom:14px;}
+
+  /* ---------- VALUES / PILLARS (About) ---------- */
+  .pillars{ display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
+  .pillar{ background:#fff; border:1px solid var(--line); border-radius:6px; padding:32px 28px; }
+  .pillar .num{ font-family:'Space Mono',monospace; font-size:12px; color:var(--shell-dark); letter-spacing:.1em; }
+  .pillar h3{ font-size:21px; margin:14px 0 10px; }
+  .pillar p{ font-size:14.5px; line-height:1.65; color:rgba(27,42,31,0.72); }
+
+  /* ---------- WHAT TO EXPECT ---------- */
+  .expect{ background:var(--scorecard-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .expect-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+  .expect-card{ background:var(--scorecard-2); padding:34px 26px; min-height:230px; display:flex; flex-direction:column; gap:16px; transition:background .25s ease;}
+  .expect-card:hover{ background:var(--scorecard); }
+  .expect-icon{ width:38px; height:38px; color:var(--shell-dark); }
+  .expect-card h3{ font-size:19px; color:var(--fairway-dark); letter-spacing:0; }
+  .expect-card p{ font-size:14px; line-height:1.6; color:rgba(27,42,31,0.7); }
+
+  /* ---------- SCOREBOARD STATS ---------- */
+  .scoreboard{ background:var(--fairway-dark); color:var(--scorecard); }
+  .board{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border:2px solid rgba(243,238,220,0.18); border-radius:6px; overflow:hidden;
+  }
+  .board .cell{ padding:38px 20px; text-align:center; border-right:2px solid rgba(243,238,220,0.18); }
+  .board .cell:last-child{ border-right:none; }
+  .board .num{ font-family:'Space Mono',monospace; font-weight:700; font-size:clamp(34px,4.4vw,52px); color:var(--gold); }
+  .board .label{ margin-top:10px; font-family:'Space Mono',monospace; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(243,238,220,0.65); }
+
+  /* ---------- SCHEDULE TEASER / PAGE ---------- */
+  .schedule-teaser{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;}
+  .schedule-teaser img{ border-radius:6px; box-shadow:0 22px 50px -24px rgba(22,40,27,0.45);}
+  .schedule-teaser h2{ font-size:clamp(30px,3.6vw,42px); }
+  .schedule-teaser p{ margin:18px 0 28px; font-size:15.5px; line-height:1.7; color:rgba(27,42,31,0.75); max-width:440px;}
+
+  .sched-list{ display:flex; flex-direction:column; border:1px solid var(--line); border-radius:6px; overflow:hidden; background:#fff; }
+  .sched-row{
+    display:grid; grid-template-columns:110px 1fr 200px 140px; align-items:center; gap:18px;
+    padding:22px 26px; border-bottom:1px solid var(--line);
+  }
+  .sched-row:last-child{ border-bottom:none; }
+  .sched-row.header{ background:var(--fairway-dark); color:var(--scorecard); }
+  .sched-row.header span{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; opacity:.7; }
+  .sched-row .date{ font-family:'Space Mono',monospace; font-size:13px; color:var(--shell-dark); font-weight:700; }
+  .sched-row .event{ font-family:'Anton',sans-serif; font-size:17px; letter-spacing:.01em; color:var(--fairway-dark); }
+  .sched-row .course{ font-size:13.5px; color:rgba(27,42,31,0.65); }
+  .tag-pill{
+    justify-self:start; font-family:'Space Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em;
+    padding:5px 10px; border-radius:20px; background:var(--scorecard-2); color:var(--shell-dark); border:1px solid var(--line);
+  }
+  .tag-pill.major{ background:var(--gold); color:var(--fairway-dark); border-color:var(--gold); }
+  .sched-note{ font-family:'Space Mono',monospace; font-size:12px; color:rgba(27,42,31,0.5); margin-top:16px; }
+
+  /* ---------- RESULTS PAGE ---------- */
+  .result-hero-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  .lb-wrap{ border:1px solid var(--line); border-radius:6px; overflow:hidden; background:#fff; }
+  .lb-row{ display:grid; grid-template-columns:56px 1fr 90px; align-items:center; gap:16px; padding:16px 24px; border-bottom:1px solid var(--line); }
+  .lb-row:last-child{ border-bottom:none; }
+  .lb-row.header{ background:var(--scorecard-2); }
+  .lb-row.header span{ font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:rgba(27,42,31,0.55); }
+  .lb-pos{ font-family:'Space Mono',monospace; font-weight:700; color:var(--shell-dark); }
+  .lb-name{ font-size:14.5px; font-weight:600; }
+  .lb-score{ font-family:'Space Mono',monospace; font-weight:700; color:var(--fairway); text-align:right; }
+  .lb-row.win .lb-pos, .lb-row.win .lb-name{ color:var(--fairway-dark); }
+  .lb-row.win{ background:rgba(216,169,62,0.14); }
+
+  /* ---------- SCHEDULE TEASER dup for schedule page hero card reuse ---------- */
+
+  /* ---------- FINAL CTA ---------- */
+  .final-cta{
+    background:var(--shell);
+    text-align:center;
+    padding:100px 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .final-cta::before{
+    content:""; position:absolute; inset:0;
+    background:repeating-linear-gradient(115deg, rgba(255,255,255,0.06) 0 42px, rgba(0,0,0,0.04) 42px 84px);
+  }
+  .final-cta > *{ position:relative; }
+  .final-cta h2{ color:var(--fairway-dark); font-size:clamp(34px,5vw,58px); }
+  .final-cta p{ font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:rgba(27,42,31,0.8); max-width:520px; margin:18px auto 34px;}
+  .final-cta .btn-solid{ background:var(--fairway-dark); border-color:var(--fairway-dark); }
+  .final-cta .btn-ghost{ border-color:var(--fairway-dark); color:var(--fairway-dark); }
+  .final-cta .btn-ghost:hover{ background:var(--fairway-dark); color:var(--scorecard); }
+  .final-ctas{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ background:var(--fairway-dark); color:rgba(243,238,220,0.55); padding:40px 0; }
+  .foot-inner{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.04em;}
+  .foot-inner ul{ display:flex; gap:22px; list-style:none; }
+  .foot-inner button{ background:none; border:none; color:inherit; font:inherit; letter-spacing:inherit; cursor:pointer; }
+  .foot-inner button:hover{ color:var(--gold); }
+
+  /* ---------- reveal ---------- */
+  .reveal{ opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* ---------- page switching ---------- */
+  .page{ display:none; }
+  .page.active{ display:block; }
+
+  @media (max-width: 900px){
+    .hero-grid, .story, .schedule-teaser, .result-hero-grid{ grid-template-columns:1fr; }
+    .story-visual{ order:-1; }
+    .champ-grid, .pillars{ grid-template-columns:1fr; }
+    .expect-grid{ grid-template-columns:1fr 1fr; }
+    .swatch-grid{ grid-template-columns:1fr 1fr; }
+    .board{ grid-template-columns:1fr 1fr; }
+    .board .cell:nth-child(2){ border-right:none; }
+    .board .cell{ border-bottom:2px solid rgba(243,238,220,0.18); }
+    .ticket{ grid-template-columns:1fr; }
+    .ticket-media{ aspect-ratio:16/10; }
+    .ticket::before{ display:none; }
+    .sched-row{ grid-template-columns:1fr; gap:6px; }
+    .sched-row.header{ display:none; }
+    .sched-row .course{ order:3; }
+    nav ul{ display:none; }
+    .menu-btn{ display:block; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .reveal{ transition:none; opacity:1; transform:none; }
+    .champ-card img{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <button class="brand" data-goto="home">
+      <img src="https://pggt.org/wp-content/uploads/2025/09/PGGT-Site-Logo-2.png" alt="Peanut Gang Golf Tour logo">
+      <span class="brand-text">PEANUT<span>GANG</span></span>
+    </button>
+    <div class="nav-links">
+      <nav><ul>
+        <li><button data-goto="home">Home</button></li>
+        <li><button data-goto="about">About</button></li>
+        <li><button data-goto="schedule">Schedule</button></li>
+        <li><button data-goto="results">Results</button></li>
+      </ul></nav>
+      <a href="#" class="btn btn-solid" style="padding:11px 20px;">Register</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HOME ============ -->
+<main class="page active" id="page-home">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">San Antonio, TX · Est. Tour</span>
+        <h1>The Gang<br>plays for<br><em>bragging rights.</em></h1>
+        <p class="hero-sub">A community golf tour for every handicap — weekly rounds, four majors, one Cup, and a lot of trash talk on the 18th green.</p>
+        <div class="hero-ctas">
+          <a href="#" class="btn btn-solid">Join the League</a>
+          <button class="btn btn-ghost" data-goto="schedule">View Schedule</button>
+        </div>
+      </div>
+      <div class="hero-card reveal">
+        <span class="tag">Live Standings · Hole 18</span>
+        <div style="margin-top:14px;">
+          <div class="scorerow"><span>1. L. Smith</span><span class="par">−9</span></div>
+          <div class="scorerow"><span>2. Z. Ramirez</span><span class="par">−7</span></div>
+          <div class="scorerow"><span>3. G. Torres</span><span class="par">−5</span></div>
+          <div class="scorerow"><span>4. Fabo D.</span><span class="par">−3</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="brand-strip tight">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-bottom:28px;">
+        <span class="eyebrow">Brand mark</span>
+        <h2 style="font-size:26px;">The logo against the new palette.</h2>
+      </div>
+      <div class="swatch-grid reveal">
+        <div class="swatch sw-cream"><img src="https://pggt.org/wp-content/uploads/2025/09/PGGT-Site-Logo-2.png" alt="Logo on scorecard cream"><span class="swatch-label">Scorecard cream</span></div>
+        <div class="swatch sw-fairway"><img src="https://pggt.org/wp-content/uploads/2025/09/PGGT-Site-Logo-2.png" alt="Logo on fairway dark"><span class="swatch-label">Fairway dark</span></div>
+        <div class="swatch sw-shell"><img src="https://pggt.org/wp-content/uploads/2025/09/PGGT-Site-Logo-2.png" alt="Logo on peanut shell tan"><span class="swatch-label">Peanut shell</span></div>
+        <div class="swatch sw-gold"><img src="https://pggt.org/wp-content/uploads/2025/09/PGGT-Site-Logo-2.png" alt="Logo on trophy gold"><span class="swatch-label">Trophy gold</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="major">
+    <div class="wrap">
+      <div class="ticket reveal">
+        <div class="ticket-media">
+          <img src="https://pggt.org/wp-content/uploads/2026/06/4-2026-PEANUT-GANG-OPEN.png" alt="2026 Peanut Gang Open">
+        </div>
+        <div class="ticket-body">
+          <span class="eyebrow">Final Major · Register Now</span>
+          <h3>The Peanut Gang Open</h3>
+          <p>Our last major championship of the season tees off at La Cantera Resort — the biggest field, the biggest purse, and the last shot at the 2026 Cup.</p>
+          <div class="ticket-meta">
+            <span>📍 La Cantera Resort, San Antonio</span>
+            <span>🗓 July 13, 2026</span>
+          </div>
+          <div style="margin-top:8px;"><a href="#" class="btn btn-solid">Reserve Your Spot</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="champs">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">2026 Champions</span>
+        <h2>Fresh off the trophy stand.</h2>
+        <p>Two first-time major winners this season — and the plaques to prove it.</p>
+      </div>
+      <div class="champ-grid">
+        <div class="champ-card reveal">
+          <img src="https://pggt.org/wp-content/uploads/2026/05/Lee-Smith-PGGT-CHAMPION-scaled.png" alt="Lee Smith, PGGT Champion">
+          <div class="champ-overlay">
+            <span class="champ-plate">PGGT Championship · Inaugural Winner</span>
+            <h3>Lee Smith</h3>
+            <p>First major title of the 2026 season.</p>
+          </div>
+        </div>
+        <div class="champ-card reveal">
+          <img src="https://pggt.org/wp-content/uploads/2026/04/Zach-Ramirez-Peanut-Prodigy-Champ-1-scaled.png" alt="Zach Ramirez, Peanut Prodigy Champion">
+          <div class="champ-overlay">
+            <span class="champ-plate">Peanut Prodigy · Inaugural Winner</span>
+            <h3>Zach Ramirez</h3>
+            <p>Took the Prodigy crown in his first major.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="expect">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">What to expect</span>
+        <h2>Every round, dialed in.</h2>
+      </div>
+      <div class="expect-grid reveal">
+        <div class="expect-card">
+          <svg class="expect-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 3v18M5 3l12 4-12 4"/></svg>
+          <h3>Fun-first golf</h3>
+          <p>Handicap and gross scoring on every card — a real challenge or a relaxed round, your call.</p>
+        </div>
+        <div class="expect-card">
+          <svg class="expect-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+          <h3>Rotating courses</h3>
+          <p>The Quarry is home base, but we roam monthly — hidden gems and classic favorites alike.</p>
+        </div>
+        <div class="expect-card">
+          <svg class="expect-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21h8M12 17v4M6 3h12l-1 8a5 5 0 0 1-10 0L6 3Z"/></svg>
+          <h3>Real prizes</h3>
+          <p>Walk away with cash, gear, and Peanut Gang glory — bragging rights included.</p>
+        </div>
+        <div class="expect-card">
+          <svg class="expect-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M17 8.5a3 3 0 1 0 0-6M21.5 20c0-2.8-1.8-5-4.7-5.7"/></svg>
+          <h3>Great people</h3>
+          <p>Bring your game and your personality — no egos, no pressure, just good times.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scoreboard">
+    <div class="wrap">
+      <div class="board reveal">
+        <div class="cell"><div class="num" data-count="1">0</div><div class="label">Est. (Years)</div></div>
+        <div class="cell"><div class="num" data-count="12">0</div><div class="label">Golf Courses</div></div>
+        <div class="cell"><div class="num" data-count="8">0</div><div class="label">Yearly Tournaments</div></div>
+        <div class="cell"><div class="num" data-count="15000" data-prefix="$">0</div><div class="label">Money Awarded</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap schedule-teaser">
+      <img class="reveal" src="https://pggt.org/wp-content/uploads/2026/06/Upcoming-Tournaments-1.png" alt="Upcoming Peanut Gang Golf Tour dates">
+      <div class="reveal">
+        <span class="eyebrow">Upcoming tour dates</span>
+        <h2>Tee times fill up fast.</h2>
+        <p>Every stop on the calendar — weekly outings and all four majors — is on the official schedule. Reserve your foursome before the field closes.</p>
+        <button class="btn btn-solid" data-goto="schedule">See the Full Schedule</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div class="wrap">
+      <h2>Ready to join<br>the Gang?</h2>
+      <p>Solo or with your crew — all are welcome. Spots fill fast, so don't miss the next tee time.</p>
+      <div class="final-ctas">
+        <a href="#" class="btn btn-solid">Register Now</a>
+        <button class="btn btn-ghost" data-goto="schedule">See the Tour Schedule</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ ABOUT ============ -->
+<main class="page" id="page-about">
+
+  <section class="hero small">
+    <div class="wrap">
+      <span class="eyebrow">About the tour</span>
+      <h1>It's not just golf.<br>It's the <em>Gang.</em></h1>
+      <p class="hero-sub">A community-built tour for golfers of every level — competitive when it counts, relaxed when it doesn't.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap story">
+      <div class="story-visual reveal">
+        <img src="https://pggt.org/wp-content/uploads/2026/03/Graham-scaled.png" alt="Peanut Gang golfer on the course">
+      </div>
+      <div class="reveal">
+        <span class="eyebrow">Our story</span>
+        <h2>Built by golfers,<br>for the Gang.</h2>
+        <p class="lede">"You don't have to win to belong — you just have to show up."</p>
+        <p>The Peanut Gang Golf Tour brings together golfers of every skill level for unforgettable rounds, plenty of laughs, and the kind of friendly competition you won't find anywhere else.</p>
+        <p>The Quarry Golf Course is home base, but the tour rotates monthly across hidden gems and local favorites, building toward four major championships and the season-ending PGGT Cup.</p>
+        <p>Off the course, the Gang partners with the local community to support youth golf programs — because the tour is about more than the scorecard.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight" style="background:var(--scorecard-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">What we stand for</span>
+        <h2 style="font-size:34px;">Three things we don't compromise on.</h2>
+      </div>
+      <div class="pillars reveal">
+        <div class="pillar">
+          <span class="num">FAIR SCORING</span>
+          <h3>Every skill level counts</h3>
+          <p>Handicap and gross divisions on every card, so a 9 and a 22 can both walk away with something to celebrate.</p>
+        </div>
+        <div class="pillar">
+          <span class="num">REAL COMMUNITY</span>
+          <h3>No egos, no pressure</h3>
+          <p>The Gang shows up for the people as much as the golf. New faces are folded in fast — that's the point.</p>
+        </div>
+        <div class="pillar">
+          <span class="num">GIVING BACK</span>
+          <h3>Youth golf, supported</h3>
+          <p>Tour proceeds help fund local youth golf initiatives — the Gang plays forward, not just for the trophy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="champs">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">How the Cup works</span>
+        <h2>One season. Four majors.<br>One Champion.</h2>
+        <p>Points from weekly tour stops and four major championships — the PGGT Championship, Peanut Prodigy, and the season-closing Peanut Gang Open among them — stack toward the season-long PGGT Cup.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div class="wrap">
+      <h2>Come play<br>with the Gang.</h2>
+      <p>Solo or with your crew — all are welcome. Spots fill fast, so don't miss the next tee time.</p>
+      <div class="final-ctas">
+        <a href="#" class="btn btn-solid">Register Now</a>
+        <button class="btn btn-ghost" data-goto="schedule">See the Tour Schedule</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ SCHEDULE ============ -->
+<main class="page" id="page-schedule">
+
+  <section class="hero small">
+    <div class="wrap">
+      <span class="eyebrow">2026 season</span>
+      <h1>The full<br><em>tee sheet.</em></h1>
+      <p class="hero-sub">Weekly tour stops plus all four majors. Gold pills mark championship events.</p>
+    </div>
+  </section>
+
+  <section class="tight">
+    <div class="wrap">
+      <div class="sched-list reveal">
+        <div class="sched-row header">
+          <span>Date</span><span>Event</span><span>Course</span><span>Type</span>
+        </div>
+        <div class="sched-row">
+          <span class="date">APR 2026</span>
+          <span class="event">Peanut Prodigy</span>
+          <span class="course">The Quarry Golf Course</span>
+          <span class="tag-pill major">Major · Complete</span>
+        </div>
+        <div class="sched-row">
+          <span class="date">MAY 2026</span>
+          <span class="event">PGGT Championship</span>
+          <span class="course">The Quarry Golf Course</span>
+          <span class="tag-pill major">Major · Complete</span>
+        </div>
+        <div class="sched-row">
+          <span class="date">MONTHLY</span>
+          <span class="event">Tour Stop — Rotating Course</span>
+          <span class="course">See official schedule for course + tee times</span>
+          <span class="tag-pill">Weekly stop</span>
+        </div>
+        <div class="sched-row">
+          <span class="date">JUL 13, 2026</span>
+          <span class="event">The Peanut Gang Open</span>
+          <span class="course">La Cantera Resort, San Antonio</span>
+          <span class="tag-pill major">Major · Register Open</span>
+        </div>
+      </div>
+      <p class="sched-note reveal">This is a layout preview — pull the confirmed dates and courses from the current PGGT schedule to fill it in.</p>
+    </div>
+  </section>
+
+  <section class="tight" style="background:var(--scorecard-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+    <div class="wrap schedule-teaser" style="align-items:center;">
+      <img class="reveal" src="https://pggt.org/wp-content/uploads/2026/06/Upcoming-Tournaments-1.png" alt="Upcoming Peanut Gang Golf Tour dates">
+      <div class="reveal">
+        <span class="eyebrow">Don't miss a tee time</span>
+        <h2 style="font-size:32px;">Fields fill fast.</h2>
+        <p>Weekly tour stops and major championships both cap entries. Register early to lock your spot and your handicap group.</p>
+        <a href="#" class="btn btn-solid">Register Now</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ RESULTS ============ -->
+<main class="page" id="page-results">
+
+  <section class="hero small">
+    <div class="wrap">
+      <span class="eyebrow">2026 season</span>
+      <h1>Results &<br><em>leaderboards.</em></h1>
+      <p class="hero-sub">This season's major champions, plus a sample leaderboard layout ready for live scoring data.</p>
+    </div>
+  </section>
+
+  <section class="champs tight">
+    <div class="wrap">
+      <div class="champ-grid">
+        <div class="champ-card reveal">
+          <img src="https://pggt.org/wp-content/uploads/2026/05/Lee-Smith-PGGT-CHAMPION-scaled.png" alt="Lee Smith, PGGT Champion">
+          <div class="champ-overlay">
+            <span class="champ-plate">PGGT Championship · Inaugural Winner</span>
+            <h3>Lee Smith</h3>
+            <p>First major title of the 2026 season.</p>
+          </div>
+        </div>
+        <div class="champ-card reveal">
+          <img src="https://pggt.org/wp-content/uploads/2026/04/Zach-Ramirez-Peanut-Prodigy-Champ-1-scaled.png" alt="Zach Ramirez, Peanut Prodigy Champion">
+          <div class="champ-overlay">
+            <span class="champ-plate">Peanut Prodigy · Inaugural Winner</span>
+            <h3>Zach Ramirez</h3>
+            <p>Took the Prodigy crown in his first major.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Sample leaderboard layout</span>
+        <h2 style="font-size:32px;">Built for live scoring.</h2>
+        <p>Swap these placeholder rows for real tournament data — the layout is ready to hold it.</p>
+      </div>
+      <div class="lb-wrap reveal">
+        <div class="lb-row header"><span>Pos</span><span>Player</span><span>Score</span></div>
+        <div class="lb-row win"><span class="lb-pos">1</span><span class="lb-name">Player Name</span><span class="lb-score">−9</span></div>
+        <div class="lb-row"><span class="lb-pos">2</span><span class="lb-name">Player Name</span><span class="lb-score">−7</span></div>
+        <div class="lb-row"><span class="lb-pos">3</span><span class="lb-name">Player Name</span><span class="lb-score">−5</span></div>
+        <div class="lb-row"><span class="lb-pos">T4</span><span class="lb-name">Player Name</span><span class="lb-score">−3</span></div>
+        <div class="lb-row"><span class="lb-pos">T4</span><span class="lb-name">Player Name</span><span class="lb-score">−3</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div class="wrap">
+      <h2>Chase the<br>next trophy.</h2>
+      <p>The Peanut Gang Open is the last major of the season — and the last shot at Cup points.</p>
+      <div class="final-ctas">
+        <a href="#" class="btn btn-solid">Register Now</a>
+        <button class="btn btn-ghost" data-goto="schedule">See the Tour Schedule</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span>© 2026 Peanut Gang Golf Tour</span>
+    <ul>
+      <li><button data-goto="about">About</button></li>
+      <li><button data-goto="schedule">Schedule</button></li>
+      <li><button data-goto="results">Results</button></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+  // ---- page switching ----
+  const pages = document.querySelectorAll('.page');
+  const navBtns = document.querySelectorAll('[data-goto]');
+  function goTo(name){
+    pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
+    document.querySelectorAll('nav ul li button[data-goto]').forEach(b=>{
+      b.classList.toggle('active', b.dataset.goto === name);
+    });
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    revealCheck();
+    resetCounters();
+  }
+  navBtns.forEach(b => b.addEventListener('click', () => goTo(b.dataset.goto)));
+
+  // ---- scroll reveal (re-checked on page switch since hidden els have no size) ----
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  function revealCheck(){
+    document.querySelectorAll('.page.active .reveal:not(.in)').forEach(el => io.observe(el));
+  }
+  revealCheck();
+
+  // ---- count-up stats ----
+  const boardIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting && !entry.target.dataset.done){
+        const el = entry.target;
+        el.dataset.done = "1";
+        const target = parseInt(el.dataset.count, 10);
+        const prefix = el.dataset.prefix || '';
+        const duration = 1200;
+        const start = performance.now();
+        function tick(now){
+          const p = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - p, 3);
+          const val = Math.round(target * eased);
+          el.textContent = prefix + val.toLocaleString() + (p >= 1 && target >= 8 ? '+' : '');
+          if(p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+    });
+  }, { threshold: 0.4 });
+  function resetCounters(){
+    document.querySelectorAll('.page.active .num[data-count]').forEach(n => boardIO.observe(n));
+  }
+  resetCounters();
+</script>
+
+</body>
+</html>
