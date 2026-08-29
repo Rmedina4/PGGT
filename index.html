@@ -90,7 +90,25 @@
   }
   nav ul li button:hover, nav ul li button.active{ border-color:var(--shell); color:var(--shell-dark); }
   .nav-links{ display:flex; align-items:center; gap:34px; }
-  .menu-btn{ display:none; background:none; border:none; cursor:pointer; }
+  .menu-btn{ display:none; background:none; border:none; cursor:pointer; color:var(--fairway-dark); padding:6px; }
+  .mobile-menu{
+    display:none;
+    flex-direction:column; gap:4px;
+    max-height:0; overflow:hidden;
+    background:var(--scorecard);
+    border-top:1px solid var(--line);
+    transition:max-height .28s ease;
+  }
+  .mobile-menu.open{ max-height:400px; }
+  .mobile-menu ul{ list-style:none; display:flex; flex-direction:column; padding:10px 28px 6px; }
+  .mobile-menu ul li button{
+    width:100%; text-align:left; padding:14px 4px; background:none; border:none; border-bottom:1px solid var(--line);
+    font-family:'Space Mono', monospace; font-size:14px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink);
+    cursor:pointer;
+  }
+  .mobile-menu ul li:last-child button{ border-bottom:none; }
+  .mobile-menu ul li button.active{ color:var(--shell-dark); }
+  .mobile-menu > .btn{ margin:6px 28px 20px; }
 
   /* ---------- HERO ---------- */
   .hero{
@@ -327,6 +345,7 @@
     .sched-row .course{ order:3; }
     nav ul{ display:none; }
     .menu-btn{ display:block; }
+    .mobile-menu{ display:flex; }
   }
   @media (prefers-reduced-motion: reduce){
     html{ scroll-behavior:auto; }
@@ -352,6 +371,18 @@
       </ul></nav>
       <a href="sms:+13619459889?&body=Hi! I'd like to register for the Peanut Gang Golf Tour." class="btn btn-solid" style="padding:11px 20px;">Register</a>
     </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path id="menuIconTop" d="M4 7h16"/><path id="menuIconMid" d="M4 12h16"/><path id="menuIconBot" d="M4 17h16"/></svg>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><button data-goto="home">Home</button></li>
+      <li><button data-goto="about">About</button></li>
+      <li><button data-goto="schedule">Schedule</button></li>
+      <li><button data-goto="results">Results</button></li>
+    </ul>
+    <a href="sms:+13619459889?&body=Hi! I'd like to register for the Peanut Gang Golf Tour." class="btn btn-solid" style="width:100%; justify-content:center;">Register</a>
   </div>
 </header>
 
@@ -729,14 +760,27 @@
   const navBtns = document.querySelectorAll('[data-goto]');
   function goTo(name){
     pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
-    document.querySelectorAll('nav ul li button[data-goto]').forEach(b=>{
+    document.querySelectorAll('button[data-goto]').forEach(b=>{
       b.classList.toggle('active', b.dataset.goto === name);
     });
     window.scrollTo({ top: 0, behavior: 'auto' });
     revealCheck();
     resetCounters();
+    closeMenu();
   }
   navBtns.forEach(b => b.addEventListener('click', () => goTo(b.dataset.goto)));
+
+  // ---- mobile menu toggle ----
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  function closeMenu(){
+    mobileMenu.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+  menuBtn.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', String(isOpen));
+  });
 
   // ---- scroll reveal (re-checked on page switch since hidden els have no size) ----
   const io = new IntersectionObserver((entries)=>{
